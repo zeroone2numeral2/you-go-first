@@ -2,4 +2,18 @@
 api_id = 0
 api_hash = ""
 phone_number = ""
-workers = 1
+
+[updates]
+typing = true
+record_audio = true
+record_round = true
+
+upload_photo = false
+upload_video = false
+upload_audio = false
+upload_document = false
+upload_round = false
+record_video = false
+geo_location = false
+game_play = false
+choose_contact = false
