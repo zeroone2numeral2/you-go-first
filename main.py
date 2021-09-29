@@ -47,7 +47,7 @@ logger.remove()
 logger.add("logs/you-go-first.log", rotation="10 MB", backtrace=True, diagnose=True)
 logger.add(
     sys.stdout,
-    level="DEBUG",
+    level="INFO",
     colorize=True,
     format="<green>{time:YYYYMMDD HH:mm:ss:SSS}</green> {level} <level>{message}</level>",
     backtrace=True,
@@ -76,7 +76,7 @@ async def on_raw_update_receive(client: Client, update, *args, **kwargs):
         chat_id = int(f"-100{update.channel_id}")
         chat_type = "channel"
     else:
-        logger.info(f"{type(update)} updates ignored: chat type disabled")
+        logger.debug(f"{type(update)} updates ignored: chat type disabled")
         return
 
     words_list = re.findall(r'SendMessage([A-Z][^A-Z]*)Action', str(type(update.action)))
@@ -118,7 +118,7 @@ async def on_raw_update_receive(client: Client, update, *args, **kwargs):
         logger.warning(update)
         return
 
-    logger.debug(f"sending '{action}...' to {chat_type} {chat_id}")
+    logger.info(f"sending '{action}...' to {chat_type} {chat_id}")
     await client.send_chat_action(chat_id, action)
 
 
