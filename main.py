@@ -26,6 +26,12 @@ from pyrogram.raw.types import (
 
 from config import config
 
+logger.remove()
+logging_format_stdout = "<green>{time:YYYYMMDD HH:mm:ss:SSS}</green> {level} <level>{message}</level>"
+logging_format_file = "[{time:YYYYMMDD HH:mm:ss:SSS}][{level}] {message}"
+logger.add("logs/you-go-first.log", level="INFO", rotation="10 MB", format=logging_format_file, backtrace=True, diagnose=True)
+logger.add(sys.stdout, level="DEBUG", colorize=True, format=logging_format_stdout, backtrace=True, diagnose=True)
+
 
 class Action:
     TYPING = "typing"
@@ -42,17 +48,6 @@ class Action:
     CHOOSE_CONTACT = "choose_contact"
     CANCEL = "cancel"
 
-
-logger.remove()
-logger.add("logs/you-go-first.log", level="INFO", rotation="10 MB", backtrace=True, diagnose=True)
-logger.add(
-    sys.stdout,
-    level="DEBUG",
-    colorize=True,
-    format="<green>{time:YYYYMMDD HH:mm:ss:SSS}</green> {level} <level>{message}</level>",
-    backtrace=True,
-    diagnose=True
-)
 
 app = Client(
     session_name="you-go-first-script",
