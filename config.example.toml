@@ -1,7 +1,7 @@
 [pyrogram]
 api_id = 0
 api_hash = ""
-phone_number = ""
+phone_number = "+39 1234567890"
 
 [updates]
 # you can decide whether to answer to updates coming from private or group chats
