@@ -7,7 +7,7 @@ from loguru import logger
 import pyrogram
 from pyrogram import Client
 from pyrogram.raw.all import layer
-from pyrogram.raw.types import UpdateUserTyping
+from pyrogram.raw.types import UpdateUserTyping, UpdateChannelUserTyping, UpdateChatUserTyping
 from pyrogram.raw.types import (
     SendMessageTypingAction,
     SendMessageCancelAction,
@@ -63,15 +63,28 @@ app = Client(
 
 @app.on_raw_update()
 async def on_raw_update_receive(client: Client, update, *args, **kwargs):
-    if not isinstance(update, UpdateUserTyping):
+    if not isinstance(update, (UpdateUserTyping, UpdateChannelUserTyping, UpdateChatUserTyping)):
+        return
+
+    if isinstance(update, UpdateUserTyping) and config.updates.private_chats:
+        chat_id = update.user_id
+        chat_type = "private"
+    elif isinstance(update, UpdateChatUserTyping) and config.updates.group_chats:
+        chat_id = update.chat_id * -1
+        chat_type = "normal_group"
+    elif isinstance(update, UpdateChannelUserTyping) and config.updates.group_chats:
+        chat_id = int(f"-100{update.channel_id}")
+        chat_type = "channel"
+    else:
+        logger.info(f"{type(update)} updates ignored: chat type disabled")
         return
 
     words_list = re.findall(r'SendMessage([A-Z][^A-Z]*)Action', str(type(update.action)))
     action_type_str = "_".join(words_list).lower()
 
-    if not isinstance(update.action, SendMessageCancelAction) or not config.updates.get(action_type_str, False):
+    if not config.updates.all_types and (not isinstance(update.action, SendMessageCancelAction) and not config.updates.get(action_type_str, False)):
         # always answer to "cancel" actions updates
-        logger.info(f"'{type(update.action)}' actions are disabled")
+        logger.info(f"'{type(update.action)}' actions are disabled ({action_type_str})")
         return
         
     if isinstance(update.action, SendMessageCancelAction):
@@ -105,8 +118,8 @@ async def on_raw_update_receive(client: Client, update, *args, **kwargs):
         logger.warning(update)
         return
 
-    logger.debug(f"sending '{action}...' to {update.user_id}")
-    await client.send_chat_action(update.user_id, action)
+    logger.debug(f"sending '{action}...' to {chat_type} {chat_id}")
+    await client.send_chat_action(chat_id, action)
 
 
 def main():

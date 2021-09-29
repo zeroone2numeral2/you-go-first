@@ -4,10 +4,19 @@ api_hash = ""
 phone_number = ""
 
 [updates]
-typing = true
-record_audio = true
-record_round = true
+# you can decide whether to answer to updates coming from private or group chats
+private_chats = true
+group_chats = false
 
+# when this is true, all the settings below will be ignored: all known updates will be answered
+all_types = false
+
+# these are the most common
+typing = true
+record_audio = true # voice messages
+record_round = true # video messages
+
+# other updates
 upload_photo = false
 upload_video = false
 upload_audio = false
