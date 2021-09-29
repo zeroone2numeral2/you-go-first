@@ -44,10 +44,10 @@ class Action:
 
 
 logger.remove()
-logger.add("logs/you-go-first.log", rotation="10 MB", backtrace=True, diagnose=True)
+logger.add("logs/you-go-first.log", level="INFO", rotation="10 MB", backtrace=True, diagnose=True)
 logger.add(
     sys.stdout,
-    level="INFO",
+    level="DEBUG",
     colorize=True,
     format="<green>{time:YYYYMMDD HH:mm:ss:SSS}</green> {level} <level>{message}</level>",
     backtrace=True,
